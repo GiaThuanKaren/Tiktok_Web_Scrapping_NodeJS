@@ -2,32 +2,27 @@ var https = require("https");
 var fs = require("fs");
 const prompt = require("prompt");
 const puppeteer = require("puppeteer");
-
+// BQDbi7BNEDZ9xbkDrwjyhfs84wa7E4oCRRzUex7GVmJDHs3RLAiQmcCyxIEDgCCs3Vff-2IQsyaeXb6UlHsoduRF729bGUJSx-_Dd6ROmgHp_eZmZuDSk5Pi5RYe88U_nxxktoQMWrzrlRtmphqPbkAFFJTvZjSisavGCzMmkBWzSd962ZNn0WWjvJujuKvZKQZBvwra22i32_RuGvL4YUoQNt9ZHZ_ICqx4k3ZQNTF4uPSIBi0FuUVb31WSK3N3qdCg3PtFgb1wGM8X3HhDlWcekR9BGxEtrLo4y4SrxSXsSMK3Eqbq8fZWw85iZyRIrs6LQDC4i7fXJ0ECaCUvbjVE3pkG
 prompt.start();
-
-// prompt.get(["username", "email"], function (err, result) {
-//   if (err) {
-//     return onErr(err);
-//   }
-//   console.log("Command-line input received:");
-//   console.log("  Username: " + result.username);
-//   console.log("  Email: " + result.email);
-// });
-
 async function Main() {
   let flag = true;
   do {
     console.log("Welcome to tikok web scrapping !!!!");
-    console.log("Choose path you want to save this files");
-    let { path } = await prompt.get(["path"]);
     console.log("Option ");
     console.log(" 1 : Get all video by id user");
     console.log(" 2 : Get video by link short ");
     console.log(" 0 : Exit");
     let { choose } = await prompt.get(["choose"]);
+    console.log("Choose path you want to save this files");
+    let { path } = await prompt.get(["path"]);
 
     switch (parseInt(choose)) {
       case 1: {
+        console.log("Enter your link detail");
+        let { urldetail } = await prompt.get(["urldetail"]);
+        await CrawlDetailPost(
+          "https://www.tiktok.com/@tiger050794/video/7116874926132350209"
+        );
         break;
       }
       case 2: {
@@ -85,3 +80,30 @@ var download = async function (url, dest, cb) {
 // );
 // https://www.tiktok.com/@infnity_mcu/video/7106899629664472321?is_copy_url=1&is_from_webapp=v1&q=natural&t=1658381477162
 // D:\\web-practise\\Tailwindcss\\sample.mp4
+// https://v16-webapp.tiktok.com/dcba868c80d21113324be8169a38e93c/62d9bb91/video/tos/alisg/tos-alisg-pve-0037/ab81b3facffd4101915a2d219cca91c7/?a=1988&ch=0&cr=0&dr=0&lr=tiktok_m&cd=0%7C0%7C1%7C0&cv=1&br=2218&bt=1109&btag=80000&cs=0&ds=3&ft=TkXt216WvjVQ96d3ZSTsddcw4i_a7uwQAM7edvcya9&mime_type=video_mp4&qs=0&rc=NzppaDtpNGk6N2Q4ZjtkN0BpajlzaWQ6Znc2ZTMzODgzNEAxYTMyNWJiNWExYzFgNC1fYSNfbnBxcjRfYi9gLS1kLy1zcw%3D%3D&l=202207211447430102451332071E2833CD
+async function CrawlComment(PageInstance) {
+  //  class Comment tiktok-q9aj5z-PCommentText e1g2efjf6 span
+  // class subcomment tiktok-1oxhn3k-PReplyActionText eo72wou4
+}
+async function CrawlDetailPost(urlDetailPost) {
+  try {
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(urlDetailPost);
+    let dataFromPage = await page.evaluate(() => {
+      let SubCommentList = document.querySelectorAll(
+        ".tiktok-q9aj5z-PCommentText.e1g2efjf6 span"
+      );
+      let ListMainCommnent = document.querySelectorAll(
+        ".tiktok-16r0vzi-DivCommentItemContainer.eo72wou0"
+      );
+      return {
+        ListComment : ListMainCommnent.length,
+        SubCommentList:SubCommentList.length
+      };
+    });
+    console.log(dataFromPage);
+    await browser.close();
+    return dataFromPage;
+  } catch (e) {}
+}
