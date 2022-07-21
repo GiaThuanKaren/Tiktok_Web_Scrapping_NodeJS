@@ -9,7 +9,7 @@ async function Main() {
   do {
     console.log("Welcome to tikok web scrapping !!!!");
     console.log("Option ");
-    console.log(" 1 : Get all video by id user");
+    console.log(" 1 : Get detail post by id user ( Video , comments )");
     console.log(" 2 : Get video by link short ");
     console.log(" 0 : Exit");
     let { choose } = await prompt.get(["choose"]);
@@ -21,7 +21,7 @@ async function Main() {
         console.log("Enter your link detail");
         let { urldetail } = await prompt.get(["urldetail"]);
         await CrawlDetailPost(
-          "https://www.tiktok.com/@tiger050794/video/7116874926132350209"
+          "https://www.tiktok.com/@tiger050794/video/6846643322170215682"
         );
         break;
       }
@@ -50,6 +50,7 @@ async function Main() {
       }
     }
   } while (flag);
+  return;
 }
 
 Main();
@@ -97,9 +98,11 @@ async function CrawlDetailPost(urlDetailPost) {
       let ListMainCommnent = document.querySelectorAll(
         ".tiktok-16r0vzi-DivCommentItemContainer.eo72wou0"
       );
+      let videoLink = document.querySelector(".xgplayer-container video").getAttribute("src")
       return {
         ListComment : ListMainCommnent.length,
-        SubCommentList:SubCommentList.length
+        SubCommentList:SubCommentList.length,
+        videoLink
       };
     });
     console.log(dataFromPage);
